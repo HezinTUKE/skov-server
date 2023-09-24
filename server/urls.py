@@ -19,6 +19,8 @@ from django.urls import path, include
 
 from registration import views as reg
 from authentication import views as auth
+from items_list import views as items
+from locations import views as locs
 
 registratio_patterns = [
     path('phone', reg.get_phone),
@@ -27,8 +29,19 @@ registratio_patterns = [
     path('finish', reg.get_user_data),
 ]
 
+items_patterns = [
+    path('categorys', items.get_categorys)
+]
+
+location_patterns = [
+    path('country', locs.get_country),
+    path('region', locs.get_regions)
+]
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registration/', include(registratio_patterns)),
-    path('login', auth.auth_login)
+    path('login', auth.auth_login),
+    path('items/', include(items_patterns)),
+    path('location/', include(location_patterns))
 ]
