@@ -51,4 +51,4 @@ def get_districts(req : HttpRequest):
             ]
 
             return JsonResponse({'districts' : vals})
-            
+        

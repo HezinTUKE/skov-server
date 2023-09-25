@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from registration import views as reg
 from authentication import views as auth
@@ -30,12 +32,15 @@ registratio_patterns = [
 ]
 
 items_patterns = [
-    path('categorys', items.get_categorys)
+    path('list', items.get_list),
+    path('categorys', items.get_categorys),
+    path('item', items.get_item)
 ]
 
 location_patterns = [
     path('country', locs.get_country),
-    path('region', locs.get_regions)
+    path('region', locs.get_regions),
+    path('district', locs.get_districts)
 ]
 
 urlpatterns = [
@@ -44,4 +49,4 @@ urlpatterns = [
     path('login', auth.auth_login),
     path('items/', include(items_patterns)),
     path('location/', include(location_patterns))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
