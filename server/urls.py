@@ -34,7 +34,8 @@ registratio_patterns = [
 items_patterns = [
     path('list', items.get_list),
     path('categorys', items.get_categorys),
-    path('item', items.get_item)
+    path('item', items.get_item),
+    path('create', items.create_item)
 ]
 
 location_patterns = [
@@ -49,4 +50,7 @@ urlpatterns = [
     path('login', auth.auth_login),
     path('items/', include(items_patterns)),
     path('location/', include(location_patterns))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG :
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

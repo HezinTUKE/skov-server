@@ -1,7 +1,7 @@
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Item, CategoryLang, SubCategory
+from .models import Item, CategoryLang, SubCategory, PhotoItem
 from registration.models import UserModel
 from locations.models import Country, Regions
 
@@ -69,6 +69,53 @@ def get_item(req : HttpRequest):
 
         else :
             return JsonResponse({'item' : None})
+
+@csrf_exempt
+def create_item(req : HttpRequest) :
+    def get_name():
+        from datetime import datetime
+        now = datetime.utcnow()
+
+        str_now = now.strftime("%Y%m%d_%H%M%S%f")[:-3]
+
+        name = f"{str_now}.jpg"
+
+        return name
+
+    if req.method == 'POST' :
+        data = req.POST.dict()
+
+        item = Item(
+                owner = UserModel.objects.get(id = req.user.id),
+                category = CategoryLang.objects.get(id = data['category_id']),
+                subcategory = SubCategory.objects.get(id = data['subcategory_id']),
+                is_active = data['is_active'],
+                title = data['title'],
+                price = data['price'],
+                description = data['description'] 
+            )
+
+        if data.get('country') :
+            item.country = data['country']
+        if data.get('region') :
+            item.region = data['region']
+        if data.get('district') :
+            item.district = data['district']
+
+        item.save()
+        
+        for i in req.FILES.values() :
+            print(get_name())
+            photo = PhotoItem.objects.create(
+                image = i,
+                name = get_name()
+            )
+
+            photo.save()
+
+            item.photos.add(photo)
+
+        return JsonResponse({'code' : 1})
 
 @csrf_exempt
 def get_categorys(req : HttpRequest):
