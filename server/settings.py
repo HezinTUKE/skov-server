@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('TOKEN')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -38,21 +38,25 @@ MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = [
-    'registration',
-    'authentication',
-    'items_list',
-    'locations',
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'registration',
+    'corsheaders',
+    'authentication',
+    'items_list',
+    'locations',
+    'like_post',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -61,9 +65,30 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.RemoteUserMiddleware",
 ]
 
+AUTH_USER_MODEL = "registration.UserModel"
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://10.0.2.2:8000",
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
+
+# SESSION_COOKIE_SAMESITE = None
+
+# SESSION_COOKIE_SECURE = True
+
+# INTERNAL_IPS = [
+#     "127.0.0.1",
+#     "10.0.2.2"
+# ]
 
 ROOT_URLCONF = 'server.urls'
+APPEND_SLASH=False
 
 TEMPLATES = [
     {

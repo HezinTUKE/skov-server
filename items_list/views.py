@@ -1,17 +1,21 @@
 from django.http import HttpRequest, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token, csrf_protect
 from django.utils import timezone
 from django.utils import timezone
 
+from django.contrib.auth.decorators import login_required
+
 from registration.models import UserModel
-from .models import CategoryLang, SubCategory, PartnerItem, Item, PhotoItem
+from .models import CategoryLang, SubCategory, Item, PhotoItem
+from like_post.models import Like
 
 from locations.models import Country, Regions
 from .forms import GetItemForm, CreateitemForm
 
 
-@csrf_exempt
+@csrf_protect
 def get_list(req : HttpRequest):
+    print(req.user)
     if req.method == 'GET' :
         items = Item.objects.filter(
             is_active = True
@@ -43,9 +47,17 @@ def get_item(req : HttpRequest):
         if form.is_valid() :
             item = Item.objects.get(id = data['id'])
 
-            owner = UserModel.objects.get(username = item.owner)
+            owner = UserModel.objects.get(username = item.user)
 
             my_item = req.user.id == owner.id
+
+            is_liked_post = Like.objects.filter(user = req.user.id).exists()
+
+            # try : 
+            #     is_liked_post = Like.objects.filter(user = req.user.id).exists()
+            #     is_liked_post = True
+            # except Exception as e :
+            #     is_liked_post = False
 
             val = {
                 'id' : data['id'],
@@ -57,7 +69,8 @@ def get_item(req : HttpRequest):
                 'country' : Country.objects.get(id = item.country_id).country,
                 'region' : Regions.objects.get(id = item.region_id).region,
                 'photos' : [ i[1] for i in item.photos.values_list() ],
-                'my_item' : my_item,
+                'is_owner' : my_item,
+                'is_liked' : is_liked_post
             }
 
             if my_item :
@@ -75,6 +88,7 @@ def get_item(req : HttpRequest):
 @csrf_exempt
 def create_item(req : HttpRequest) :
     if req.method == 'POST' :
+        '''
         if req.user.is_active :
             
             item_form = CreateitemForm(req.POST, req.FILES)
@@ -121,7 +135,9 @@ def create_item(req : HttpRequest) :
                 print(item_form.errors)
                 return JsonResponse({'code' : -1})
         
-        else : return JsonResponse({'code' : 0})
+        else : 
+        '''
+        return JsonResponse({'code' : 0})
 
 @csrf_exempt
 def get_categorys(req : HttpRequest):

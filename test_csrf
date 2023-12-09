@@ -1,0 +1,2 @@
+from django.test import Client
+client = Client(enforce_csrf_checks=True)

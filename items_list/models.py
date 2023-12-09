@@ -33,7 +33,7 @@ class PhotoItem(models.Model) :
     image = models.ImageField(upload_to = photo_path)
 
 class Item(models.Model) :
-    owner = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     category = models.ForeignKey(CategoryLang, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)

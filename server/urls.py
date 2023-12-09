@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib.auth import urls
 from registration import views as reg
 from authentication import views as auth
 from items_list import views as items
 from locations import views as locs
+from like_post import views as like
 
 registratio_patterns = [
     path('phone', reg.get_phone),
@@ -35,7 +36,8 @@ items_patterns = [
     path('list', items.get_list),
     path('categorys', items.get_categorys),
     path('item', items.get_item),
-    path('create', items.create_item)
+    path('create', items.create_item),
+    path('like', like.post_like)
 ]
 
 location_patterns = [
@@ -45,11 +47,13 @@ location_patterns = [
 ]
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('registration/', include(registratio_patterns)),
     path('login', auth.auth_login),
+    path('logout', auth.auth_logout),
     path('items/', include(items_patterns)),
-    path('location/', include(location_patterns))
+    path('location/', include(location_patterns)),
+    path("accounts/", include(urls)),
 ]
 
 if settings.DEBUG :

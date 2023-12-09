@@ -1,7 +1,7 @@
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.backends.db import SessionStore
-
+from .models import UserModel
 from datetime import datetime, timedelta
 import string
 import random
@@ -85,7 +85,7 @@ def get_user_private(req : HttpRequest) :
         form_private =  user_private(data)
 
         if form_private.is_valid() :
-            user = User.objects.filter(username = data.dict().get('username'))
+            user = UserModel.objects.filter(username = data.dict().get('username'))
 
             if user :
                 code = -2

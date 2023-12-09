@@ -1,31 +1,31 @@
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
 
-from registration.models import UserModel
+from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 def auth_login(req : HttpRequest):
-    data = req.POST.dict()
-    code = -1
+    if req.method == 'POST' :
+        code = -1
 
-    if 'username' in data : 
-        auth_user = authenticate(req, username = data.get('username'), password = data.get('password'))
+        form = AuthenticationForm(req, data = req.POST)
 
-        if auth_user is not None:
-            login(req, auth_user)
+        if form.is_valid(): 
+            login(req, form.get_user())
             code = 1
+        else : code = 0
 
     return JsonResponse({
         'code' : code
     })
 
 @csrf_exempt
-def logout(req : HttpRequest):
-    code = -1
-
+@login_required
+def auth_logout(req : HttpRequest):
     logout(req)
 
     return JsonResponse({
-        'code' : code
+        'code' : 1
     })
