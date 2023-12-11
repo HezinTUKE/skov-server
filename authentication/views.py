@@ -1,17 +1,20 @@
 from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 
 from django.contrib.auth.decorators import login_required
 
+from rest_framework.authtoken.models import Token
+
 @csrf_exempt
 def auth_login(req : HttpRequest):
     if req.method == 'POST' :
+        print("HERE")
         code = -1
 
         form = AuthenticationForm(req, data = req.POST)
-
+        
         if form.is_valid(): 
             login(req, form.get_user())
             code = 1

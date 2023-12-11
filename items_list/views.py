@@ -15,8 +15,9 @@ from .forms import GetItemForm, CreateitemForm
 
 @csrf_protect
 def get_list(req : HttpRequest):
-    print(req.user)
     if req.method == 'GET' :
+        print(req.user)
+
         items = Item.objects.filter(
             is_active = True
         ).order_by('-active_time')
@@ -88,56 +89,52 @@ def get_item(req : HttpRequest):
 @csrf_exempt
 def create_item(req : HttpRequest) :
     if req.method == 'POST' :
-        '''
-        if req.user.is_active :
+        item_form = CreateitemForm(req.POST, req.FILES)
+        if item_form.is_valid() :
+            data = req.POST.dict()
+
+            is_active = data['is_active']
+            time = timezone.now()
+
+            item = Item(
+                    owner = UserModel.objects.get(id = req.user.id),
+                    category = CategoryLang.objects.get(id = data['category_id']),
+                    subcategory = SubCategory.objects.get(id = data['subcategory_id']),
+                    is_active = is_active,
+                    title = data['title'],
+                    price = data['price'],
+                    description = data['description'], 
+                    create_time = time,
+                    country = Country.objects.get(id = data['country_id']),
+                    region = Regions.objects.get(id = data['region_id'])
+                )
             
-            item_form = CreateitemForm(req.POST, req.FILES)
-            if item_form.is_valid() :
-                data = req.POST.dict()
+            if data.get('district_id') :
+                item.district = data['district_id']
+            
+            if is_active :
+                item.active_time = time
+            elif data.get('active_time') :
+                item.active_time = data['active_time']
 
-                is_active = data['is_active']
-                time = timezone.now()
+            item.save()
+            
+            for i in req.FILES.getlist('photos') :
+                photo = PhotoItem.objects.create(
+                    image = i
+                )
 
-                item = Item(
-                        owner = UserModel.objects.get(id = req.user.id),
-                        category = CategoryLang.objects.get(id = data['category_id']),
-                        subcategory = SubCategory.objects.get(id = data['subcategory_id']),
-                        is_active = is_active,
-                        title = data['title'],
-                        price = data['price'],
-                        description = data['description'], 
-                        create_time = time,
-                        country = Country.objects.get(id = data['country_id']),
-                        region = Regions.objects.get(id = data['region_id'])
-                    )
-                
-                if data.get('district_id') :
-                    item.district = data['district_id']
-                
-                if is_active :
-                    item.active_time = time
-                elif data.get('active_time') :
-                    item.active_time = data['active_time']
+                photo.save()
 
-                item.save()
-                
-                for i in req.FILES.getlist('photos') :
-                    photo = PhotoItem.objects.create(
-                        image = i
-                    )
+                item.photos.add(photo)
 
-                    photo.save()
-
-                    item.photos.add(photo)
-
-                return JsonResponse({'code' : 1})
-            else :
-                print(item_form.errors)
-                return JsonResponse({'code' : -1})
+            return JsonResponse({'code' : 1})
+        else :
+            print(item_form.errors)
+            return JsonResponse({'code' : -1})
         
-        else : 
-        '''
-        return JsonResponse({'code' : 0})
+    else : 
+            return JsonResponse({'code' : 0})
 
 @csrf_exempt
 def get_categorys(req : HttpRequest):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework.authtoken',
     'rest_framework',
     'registration',
     'corsheaders',
@@ -52,6 +53,13 @@ INSTALLED_APPS = [
     'locations',
     'like_post',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,24 +76,6 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = "registration.UserModel"
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://10.0.2.2:8000",
-]
-
-CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_CREDENTIALS = True
-
-# SESSION_COOKIE_SAMESITE = None
-
-# SESSION_COOKIE_SECURE = True
-
-# INTERNAL_IPS = [
-#     "127.0.0.1",
-#     "10.0.2.2"
-# ]
 
 ROOT_URLCONF = 'server.urls'
 APPEND_SLASH=False
