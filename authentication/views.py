@@ -1,34 +1,49 @@
 from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-
 from django.contrib.auth.decorators import login_required
 
+from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-@csrf_exempt
-def auth_login(req : HttpRequest):
-    if req.method == 'POST' :
-        print("HERE")
+class LoginView(APIView) :
+    
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, req : HttpRequest):
         code = -1
+        token = ''
+        if req.method == 'POST' :
+            data = req.POST.dict()  
+            form = authenticate(req, username=data['username'], password=data['password'])
+            
+            if form is not None: 
+                login(req, form)
+                req.session.modified = True
+                
+                token = Token.objects.get(user = form)
+                token = token.key
+                code = 1
+                
+            else : code = 0
 
-        form = AuthenticationForm(req, data = req.POST)
-        
-        if form.is_valid(): 
-            login(req, form.get_user())
-            code = 1
-        else : code = 0
+        return JsonResponse({
+            'token' : token,
+            'code' : code
+        })
+    
 
-    return JsonResponse({
-        'code' : code
-    })
 
-@csrf_exempt
-@login_required
-def auth_logout(req : HttpRequest):
-    logout(req)
+class LogoutView(APIView) :
 
-    return JsonResponse({
-        'code' : 1
-    })
+    permission_classes = [IsAuthenticated]
+
+    def post(self, req : HttpRequest):
+        logout(req)
+
+        return JsonResponse({
+            'code' : 1
+        })

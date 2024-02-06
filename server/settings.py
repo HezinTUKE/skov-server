@@ -30,20 +30,20 @@ SECRET_KEY = os.getenv('TOKEN')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = ['*']
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
     'rest_framework.authtoken',
     'rest_framework',
     'registration',
@@ -52,33 +52,66 @@ INSTALLED_APPS = [
     'items_list',
     'locations',
     'like_post',
+    # 'oauth'
 ]
 
-REST_FRAMEWORK = {
+# SESSION_COOKIE_SECURE = False
+
+# CORS_ORIGIN_ALLOW_ALL = True
+
+LOGIN_URL='/admin/login/'
+
+REST_FRAMEWORK = {    
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # Add this line
     ],
 }
+
+# OAUTH2_PROVIDER = {
+#     'SCOPES': {
+#         'read': 'Read scope',
+#         'write': 'Write scope',
+#         'introspection': 'Introspect token scope',
+#     },
+# }
+
+SESSION_COOKIE_AGE = 1209600
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django.contrib.auth.middleware.RemoteUserMiddleware",
+]
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://127.0.0.1:8000',
+# ]
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#     }
+# }
+
+# SESSION_COOKIE_DOMAIN = None
+
+# SESSION_SAVE_EVERY_REQUEST = True
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # Add any additional authentication backends if needed
 ]
 
 AUTH_USER_MODEL = "registration.UserModel"
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 ROOT_URLCONF = 'server.urls'
-APPEND_SLASH=False
+# APPEND_SLASH=False
 
 TEMPLATES = [
     {
@@ -149,7 +182,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-SESSION_SAVE_EVERY_REQUEST = True
+#SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

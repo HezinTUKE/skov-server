@@ -1,9 +1,8 @@
-from django.shortcuts import render
-
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Country, Regions, Districts
+
 
 @csrf_exempt
 def get_country(req : HttpRequest):

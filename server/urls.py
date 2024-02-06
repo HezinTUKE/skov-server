@@ -26,18 +26,16 @@ from locations import views as locs
 from like_post import views as like
 
 registratio_patterns = [
-    path('phone', reg.get_phone),
-    path('sms', reg.check_sms),
-    path('private', reg.get_user_private),
-    path('finish', reg.get_user_data),
+    path('phone', reg.RegistrationPhoneStepView.as_view()),
+    path('sms', reg.RegistrationSMSStepView.as_view()),
+    path('private', reg.RegistrationPasswordStep.as_view()),
+    path('finish', reg.CreateUserView.as_view()),
 ]
 
 items_patterns = [
-    path('list', items.get_list),
-    path('categorys', items.get_categorys),
-    path('item', items.get_item),
-    path('create', items.create_item),
-    path('like', like.post_like)
+    path('list', items.ItemsListView.as_view()),
+    path('item', items.ItemView.as_view()),
+    path('like', like.LikeView.as_view())
 ]
 
 location_patterns = [
@@ -47,13 +45,14 @@ location_patterns = [
 ]
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('registration/', include(registratio_patterns)),
-    path('login', auth.auth_login),
-    path('logout', auth.auth_logout),
+    path('authorize', auth.LoginView.as_view()),
+    path('logout', auth.LogoutView.as_view()),
     path('items/', include(items_patterns)),
     path('location/', include(location_patterns)),
     path("accounts/", include(urls)),
+    path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 
 if settings.DEBUG :
