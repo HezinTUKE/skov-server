@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.utils import timezone
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -46,7 +46,7 @@ class ItemView(APIView) :
     
     permission_classes = [IsAuthenticated]
 
-    def get(req : HttpRequest):
+    def get(self, req : HttpRequest):
         if req.method == 'GET' :
             data = req.GET.dict()
             form = GetItemForm(req.GET)
@@ -86,7 +86,7 @@ class ItemView(APIView) :
             else :
                 return Response({'item' : None})
 
-    def post(req : HttpRequest) :
+    def post(self, req : HttpRequest) :
         if req.method == 'POST' :
             item_form = CreateitemForm(req.POST, req.FILES)
             if item_form.is_valid() :
@@ -134,3 +134,24 @@ class ItemView(APIView) :
             
         else :
                 return Response({'code' : 0})
+        
+class CategoryView(APIView) :
+    permission_classes = [AllowAny]
+
+    def get(self, req : HttpRequest) :
+        if req.method == 'GET' :
+            data = req.GET.dict()
+
+            pattern = data['pattern']
+            
+            category = CategoryLang.objects.filter(name_sk__contains=pattern).values('id', 'name_sk')
+
+            res = [
+                {'id' : i['id'], 'name' : i['name']} for i in category
+            ]
+
+            return Response({
+                'categorys' : res 
+            })
+
+            
