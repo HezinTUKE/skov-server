@@ -139,15 +139,16 @@ class CategoryView(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, req : HttpRequest) :
+        print("HERE1")
         if req.method == 'GET' :
+            print("HERE2")
             data = req.GET.dict()
 
-            pattern = data['pattern']
             
-            category = CategoryLang.objects.filter(name_sk__contains=pattern).values('id', 'name_sk')
+            category = CategoryLang.objects.all().values('id', 'name_sk')
 
             res = [
-                {'id' : i['id'], 'name' : i['name']} for i in category
+                {'id' : i['id'], 'name' : i['name_sk']} for i in category
             ]
 
             return Response({

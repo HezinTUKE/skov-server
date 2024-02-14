@@ -35,7 +35,8 @@ registratio_patterns = [
 items_patterns = [
     path('list', items.ItemsListView.as_view()),
     path('item', items.ItemView.as_view()),
-    path('like', like.LikeView.as_view())
+    path('like', like.LikeView.as_view()),
+    path('category', items.CategoryView.as_view())
 ]
 
 location_patterns = [
