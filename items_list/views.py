@@ -139,12 +139,7 @@ class CategoryView(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, req : HttpRequest) :
-        print("HERE1")
         if req.method == 'GET' :
-            print("HERE2")
-            data = req.GET.dict()
-
-            
             category = CategoryLang.objects.all().values('id', 'name_sk')
 
             res = [
@@ -155,4 +150,18 @@ class CategoryView(APIView) :
                 'categorys' : res 
             })
 
-            
+class SubCategoryView(APIView) :
+    permission_classes = [AllowAny]
+
+    def get(self, req : HttpRequest) :
+        if req.method == 'GET' :
+            data = req.GET.dict()
+            subcategory = SubCategory.objects.filter(category_id = data['category']).values('id', 'name_sk')
+
+            res = [
+                {'id' : i['id'], 'name' : i['name_sk']} for i in subcategory
+            ]
+
+            return Response({
+                'subcategorys' : res 
+            })
