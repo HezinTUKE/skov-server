@@ -154,6 +154,7 @@ class SubCategoryView(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, req : HttpRequest) :
+        print("Hello")
         if req.method == 'GET' :
             data = req.GET.dict()
             subcategory = SubCategory.objects.filter(category_id = data['category']).values('id', 'name_sk')
