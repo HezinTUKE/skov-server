@@ -1,53 +1,65 @@
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
 from .models import Country, Regions, Districts
 
+class CountryView(APIView) :
 
-@csrf_exempt
-def get_country(req : HttpRequest):
-    if req.method == 'GET' :
-        countrys = Country.objects.all().values('id','country')    
+    authentication_classes = [AllowAny]
 
-        vals = [ 
-            {'id' : i['id'], 'name' : i['country']} for i in countrys
-        ]
+    def get(req : HttpRequest):
+        if req.method == 'GET' :
+            countrys = Country.objects.all().values('id','country')    
 
-        return JsonResponse({'countrys' : vals})
+            vals = [ 
+                {'id' : i['id'], 'name' : i['country']} for i in countrys
+            ]
+
+            return Response({'countrys' : vals})
     
-@csrf_exempt
-def get_regions(req : HttpRequest):
-    if req.method == 'GET' :
-        data = req.GET.dict()
+class RegionView(APIView) :
+    
+    authentication_classes = [AllowAny]
 
-        country_id = data['id']
+    def get(req : HttpRequest):
+        if req.method == 'GET' :
+            data = req.GET.dict()
 
-        if country_id == -1 :
-            return JsonResponse({})
-        else :
-            regions = Regions.objects.filter(coutry_id = country_id).values('id', 'region')
+            country_id = data['id']
 
-            vals = [
-                {'id' : i['id'], 'name' : i['region']} for i in regions
-            ]
+            if country_id == -1 :
+                return Response({})
+            else :
+                regions = Regions.objects.filter(coutry_id = country_id).values('id', 'region')
 
-            return JsonResponse({'regions' : vals})
+                vals = [
+                    {'id' : i['id'], 'name' : i['region']} for i in regions
+                ]
+
+                return Response({'regions' : vals})
         
-@csrf_exempt
-def get_districts(req : HttpRequest):
-    if req.method == 'GET' :
-        data = req.GET.dict()
+class DistrictView(APIView):
+    
+    authentication_classes = [AllowAny]
 
-        reg_id = data['id']
+    def get(req : HttpRequest):
+        if req.method == 'GET' :
+            data = req.GET.dict()
 
-        if reg_id == -1 :
-            return JsonResponse({})
-        else : 
-            districts = Districts.objects.filter(region_id = reg_id).values('id', 'district')
+            reg_id = data['id']
 
-            vals = [
-                {'id' : i['id'], 'name' : i['district']} for i in districts
-            ]
+            if reg_id == -1 :
+                return Response({})
+            else : 
+                districts = Districts.objects.filter(region_id = reg_id).values('id', 'district')
 
-            return JsonResponse({'districts' : vals})
+                vals = [
+                    {'id' : i['id'], 'name' : i['district']} for i in districts
+                ]
+
+                return Response({'districts' : vals})
         

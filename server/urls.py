@@ -41,9 +41,9 @@ items_patterns = [
 ]
 
 location_patterns = [
-    path('country', locs.get_country),
-    path('region', locs.get_regions),
-    path('district', locs.get_districts)
+    path('country', locs.CountryView.as_view()),
+    path('region', locs.RegionView.as_view()),
+    path('district', locs.DistrictView.as_view())
 ]
 
 urlpatterns = [

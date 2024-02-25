@@ -30,7 +30,7 @@ class LoginView(APIView) :
                 
             else : code = 0
 
-        return JsonResponse({
+        return Response({
             'token' : token,
             'code' : code
         })
