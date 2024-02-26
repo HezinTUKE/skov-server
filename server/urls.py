@@ -54,7 +54,6 @@ urlpatterns = [
     path('items/', include(items_patterns)),
     path('location/', include(location_patterns)),
     path("accounts/", include(urls)),
-    path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 
 if settings.DEBUG :

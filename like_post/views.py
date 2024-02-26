@@ -2,6 +2,7 @@ from django.http import HttpRequest
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .forms import LikePost
 from .models import Like
@@ -10,6 +11,9 @@ from registration.models import UserModel
 from items_list.models import Item
 
 class LikeView(APIView) :
+
+    permission_classes = [IsAuthenticated]
+
     def post(req : HttpRequest):
         code = -1
 

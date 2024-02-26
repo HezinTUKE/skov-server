@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'items_list',
     'locations',
     'like_post',
+    'icons'
 ]
 
 LOGIN_URL='/admin/login/'

@@ -50,4 +50,3 @@ class Item(models.Model) :
 class PartnerItem(models.Model):
     title = models.CharField(max_length=25)
     item = models.ManyToManyField(Item)
-    

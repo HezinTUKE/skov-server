@@ -1,9 +1,12 @@
 from django.db import models
 
+from icons.models import Icon
+
 class Country(models.Model):
     country = models.CharField(max_length=15)
     phone_code = models.CharField(max_length=10)
     short = models.CharField(max_length=5)
+    icon = models.ForeignKey(Icon, on_delete=models.CASCADE, null = True)
 
 class Regions(models.Model):
     coutry = models.ForeignKey(Country, on_delete=models.CASCADE)
