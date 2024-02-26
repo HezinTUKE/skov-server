@@ -29,7 +29,7 @@ class RegionView(APIView) :
         if req.method == 'GET' :
             data = req.GET.dict()
 
-            country_id = data['id']
+            country_id = data['country_id']
 
             if country_id == -1 :
                 return Response({})
@@ -50,7 +50,7 @@ class DistrictView(APIView):
         if req.method == 'GET' :
             data = req.GET.dict()
 
-            reg_id = data['id']
+            reg_id = data['region_id']
 
             if reg_id == -1 :
                 return Response({})

@@ -52,12 +52,7 @@ INSTALLED_APPS = [
     'items_list',
     'locations',
     'like_post',
-    # 'oauth'
 ]
-
-# SESSION_COOKIE_SECURE = False
-
-# CORS_ORIGIN_ALLOW_ALL = True
 
 LOGIN_URL='/admin/login/'
 
@@ -66,14 +61,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',  # Add this line
     ],
 }
-
-# OAUTH2_PROVIDER = {
-#     'SCOPES': {
-#         'read': 'Read scope',
-#         'write': 'Write scope',
-#         'introspection': 'Introspect token scope',
-#     },
-# }
 
 SESSION_COOKIE_AGE = 1209600
 
@@ -87,20 +74,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://127.0.0.1:8000',
-# ]
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-#     }
-# }
-
-# SESSION_COOKIE_DOMAIN = None
-
-# SESSION_SAVE_EVERY_REQUEST = True
-
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     # Add any additional authentication backends if needed
@@ -111,7 +84,6 @@ AUTH_USER_MODEL = "registration.UserModel"
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 ROOT_URLCONF = 'server.urls'
-# APPEND_SLASH=False
 
 TEMPLATES = [
     {
@@ -131,15 +103,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-#    'NAME': os.getenv('DATABASE_NAME'), 
-#         'USER': os.getenv('USER'),
-#         'PASSWORD': os.getenv('PASSWORD'),
-#         'HOST': os.getenv('HOST'), 
-#         'PORT': os.getenv('PORT'),
 
 DATABASES = {
     'default': {
@@ -182,7 +145,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-#SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
