@@ -16,4 +16,5 @@ def icon_path(instance, filename) :
 
 class Icon(models.Model):
     icon = models.ImageField(upload_to=icon_path)
+    name = models.CharField(max_length=25, null = True)
     
