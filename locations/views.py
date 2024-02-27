@@ -5,27 +5,35 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from icons.models import Icon
+
 from .models import Country, Regions, Districts
 
 class CountryView(APIView) :
 
-    authentication_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
-    def get(req : HttpRequest):
-        if req.method == 'GET' :
-            countrys = Country.objects.all().values('id','country')    
+    def get(self, req : HttpRequest):
+            countrys = Country.objects.all().values('id','country','icon')    
 
             vals = [ 
-                {'id' : i['id'], 'name' : i['country']} for i in countrys
+                {'id' : i['id'], 'name' : i['country'], 'icon' : str( Icon.objects.get(id = i['icon']).icon ) } 
+                    for i in countrys
             ]
+
+            # for d in vals :
+            #     for k, v in d.items():
+            #         if k == 'icon' :
+            #             i = Icon.objects.get(id = v)
+            #             d[k] = str(i.icon)
 
             return Response({'countrys' : vals})
     
 class RegionView(APIView) :
     
-    authentication_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
-    def get(req : HttpRequest):
+    def get(self, req : HttpRequest):
         if req.method == 'GET' :
             data = req.GET.dict()
 
@@ -44,9 +52,9 @@ class RegionView(APIView) :
         
 class DistrictView(APIView):
     
-    authentication_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
-    def get(req : HttpRequest):
+    def get(self, req : HttpRequest):
         if req.method == 'GET' :
             data = req.GET.dict()
 

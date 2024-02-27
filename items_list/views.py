@@ -18,9 +18,6 @@ class ItemsListView(APIView) :
 
     def get(self, req : HttpRequest):
         if req.method == 'GET' :
-            print(req.user)
-            print(req.user.id)
-            print(req.headers)
             items = Item.objects.filter(
                 is_active = True
             ).order_by('-active_time')
