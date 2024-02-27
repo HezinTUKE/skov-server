@@ -35,7 +35,4 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created :
-        if instance.is_superuser:    
-            Token.objects.create(user=instance, key="superuser_key")
-        else:
-            Token.objects.create(user=instance)
+        Token.objects.create(user=instance)

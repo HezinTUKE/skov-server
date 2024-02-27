@@ -19,11 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import urls
+
 from registration import views as reg
 from authentication import views as auth
 from items_list import views as items
 from locations import views as locs
 from like_post import views as like
+from icons import views as icon_util
 
 registratio_patterns = [
     path('phone', reg.RegistrationPhoneStepView.as_view()),
@@ -46,6 +48,10 @@ location_patterns = [
     path('district', locs.DistrictView.as_view())
 ]
 
+utils_patterns = [
+    path('icon', icon_util.IconView.as_view())
+]
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registration/', include(registratio_patterns)),
@@ -53,7 +59,8 @@ urlpatterns = [
     path('logout', auth.LogoutView.as_view()),
     path('items/', include(items_patterns)),
     path('location/', include(location_patterns)),
-    path("accounts/", include(urls)),
+    path('accounts/', include(urls)),
+    path('utils/', include(utils_patterns))
 ]
 
 if settings.DEBUG :

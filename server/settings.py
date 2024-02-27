@@ -60,6 +60,7 @@ LOGIN_URL='/admin/login/'
 REST_FRAMEWORK = {    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',  # Add this line
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
 
