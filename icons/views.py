@@ -12,12 +12,20 @@ class IconView(APIView) :
 
     def post(self, req : HttpRequest):
         code = -1
-        icon_form = IconForm(req.FILES)
+        icon_form = IconForm(req.POST, req.FILES)
+        print(req.FILES)
         if icon_form.is_valid() :
-            icon = Icon(req.FILES['icon'])
+
+            icon = Icon(
+                        name = req.POST.dict()['name'], 
+                        icon = req.FILES['icon']
+                    )
+            
             icon.save()
             code = 1
-        
+        else :
+            print(icon_form.errors)
+
         return Response({
             'code' : code
         })
