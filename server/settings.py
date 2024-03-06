@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oauth2_provider',
     'rest_framework.authtoken',
     'rest_framework',
     'registration',
@@ -52,7 +51,8 @@ INSTALLED_APPS = [
     'items_list',
     'locations',
     'like_post',
-    'icons'
+    'icons',
+    'groups'
 ]
 
 LOGIN_URL='/admin/login/'

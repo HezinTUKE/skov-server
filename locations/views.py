@@ -27,7 +27,7 @@ class CountryView(APIView) :
             #             i = Icon.objects.get(id = v)
             #             d[k] = str(i.icon)
 
-            return Response({'countrys' : vals})
+            return Response({'location' : vals})
     
 class RegionView(APIView) :
     
@@ -48,7 +48,7 @@ class RegionView(APIView) :
                     {'id' : i['id'], 'name' : i['region']} for i in regions
                 ]
 
-                return Response({'regions' : vals})
+                return Response({'location' : vals})
         
 class DistrictView(APIView):
     
@@ -69,5 +69,5 @@ class DistrictView(APIView):
                     {'id' : i['id'], 'name' : i['district']} for i in districts
                 ]
 
-                return Response({'districts' : vals})
+                return Response({'location' : vals})
         
