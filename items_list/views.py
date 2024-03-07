@@ -50,10 +50,9 @@ class ItemView(APIView) :
 
             if form.is_valid() :
                 item = Item.objects.get(id = data['id'])
-
-                owner = UserModel.objects.get(username = item.user)
-
-                my_item = req.user.id == owner.id
+                print(item.description)
+                print(item.user)
+                my_item = False
 
                 is_liked_post = Like.objects.filter(user = req.user.id).exists()
 
@@ -93,7 +92,7 @@ class ItemView(APIView) :
                 time = timezone.now()
 
                 item = Item(
-                        owner = UserModel.objects.get(id = req.user.id),
+                        user = UserModel.objects.get(id = req.user.id),
                         category = CategoryLang.objects.get(id = data['category_id']),
                         subcategory = SubCategory.objects.get(id = data['subcategory_id']),
                         is_active = is_active,
