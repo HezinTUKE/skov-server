@@ -52,7 +52,7 @@ class ItemView(APIView) :
                 item = Item.objects.get(id = data['id'])
                 print(item.description)
                 print(item.user)
-                my_item = False
+                my_item = item.user == req.user.id
 
                 is_liked_post = Like.objects.filter(user = req.user.id).exists()
 
@@ -83,11 +83,12 @@ class ItemView(APIView) :
                 return Response({'item' : None})
 
     def post(self, req : HttpRequest) :
+        print(req.user.id)
+
         if req.method == 'POST' :
             item_form = CreateitemForm(req.POST, req.FILES)
             if item_form.is_valid() :
                 data = req.POST.dict()
-
                 is_active = data['is_active']
                 time = timezone.now()
 
