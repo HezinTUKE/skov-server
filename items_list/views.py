@@ -44,93 +44,86 @@ class ItemView(APIView) :
     permission_classes = [IsAuthenticated]
 
     def get(self, req : HttpRequest):
-        if req.method == 'GET' :
-            data = req.GET.dict()
-            form = GetItemForm(req.GET)
+        data = req.GET.dict()
+        form = GetItemForm(req.GET)
 
-            if form.is_valid() :
-                item = Item.objects.get(id = data['id'])
-                print(item.description)
-                print(item.user)
-                my_item = item.user == req.user.id
+        if form.is_valid() :
+            item = Item.objects.get(id = data['id'])
+            my_item = item.user.id == req.user.id
 
-                is_liked_post = Like.objects.filter(user = req.user.id).exists()
+            is_liked_post = Like.objects.filter(user = req.user.id).exists()
 
-                val = {
-                    'id' : data['id'],
-                    'title' : item.title,
-                    'price' : "{:.2f}".format(item.price),
-                    'description' : item.description,
-                    'category' : CategoryLang.objects.get(id = item.category_id).name_en,
-                    'subcategory' : SubCategory.objects.get(id = item.subcategory_id).name_en,
-                    'country' : Country.objects.get(id = item.country_id).country,
-                    'region' : Regions.objects.get(id = item.region_id).region,
-                    'photos' : [ i[1] for i in item.photos.values_list() ],
-                    'is_owner' : my_item,
-                    'is_liked' : is_liked_post
-                }
+            val = {
+                'id' : data['id'],
+                'title' : item.title,
+                'price' : "{:.2f}".format(item.price),
+                'description' : item.description,
+                'category' : CategoryLang.objects.get(id = item.category_id).name_en,
+                'subcategory' : SubCategory.objects.get(id = item.subcategory_id).name_en,
+                'country' : Country.objects.get(id = item.country_id).country,
+                'region' : Regions.objects.get(id = item.region_id).region,
+                'photos' : [ i[1] for i in item.photos.values_list() ],
+                'is_owner' : my_item,
+                'is_liked' : is_liked_post
+            }
 
-                if my_item :
-                    val['is_active'] = item.is_active
-                    if not item.is_active:
-                        val['active_time'] = item.active_time 
+            if my_item :
+                val['is_active'] = item.is_active
+                if not item.is_active:
+                    val['active_time'] = item.active_time 
 
-                return Response({
-                    'item' : val
-                })
+            return Response({
+                'item' : val
+            })
 
-            else :
-                return Response({'item' : None})
+        else :
+            return Response({'item' : None})
 
     def post(self, req : HttpRequest) :
-        print(req.user.id)
+        item_form = CreateitemForm(req.POST, req.FILES)
 
-        if req.method == 'POST' :
-            item_form = CreateitemForm(req.POST, req.FILES)
-            if item_form.is_valid() :
-                data = req.POST.dict()
-                is_active = data['is_active']
-                time = timezone.now()
-
-                item = Item(
-                        user = UserModel.objects.get(id = req.user.id),
-                        category = CategoryLang.objects.get(id = data['category_id']),
-                        subcategory = SubCategory.objects.get(id = data['subcategory_id']),
-                        is_active = is_active,
-                        title = data['title'],
-                        price = data['price'],
-                        description = data['description'], 
-                        create_time = time,
-                        country = Country.objects.get(id = data['country_id']),
-                        region = Regions.objects.get(id = data['region_id'])
-                    )
-                
-                if data.get('district_id') :
-                    item.district = data['district_id']
-                
-                if is_active :
-                    item.active_time = time
-                elif data.get('active_time') :
-                    item.active_time = data['active_time']
-
-                item.save()
-                
-                for i in req.FILES.getlist('photos') :
-                    photo = PhotoItem.objects.create(
-                        image = i
-                    )
-
-                    photo.save()
-
-                    item.photos.add(photo)
-
-                return Response({'code' : 1})
-            else :
-                print(item_form.errors)
-                return Response({'code' : -1})
+        if item_form.is_valid() :
+            data = req.POST.dict()
+            is_active = data['is_active']
+            time = timezone.now()
             
+            item = Item(
+                    user = UserModel.objects.get(id = req.user.id),
+                    category = CategoryLang.objects.get(id = data['category_id']),
+                    subcategory = SubCategory.objects.get(id = data['subcategory_id']),
+                    is_active = is_active,
+                    title = data['title'],
+                    price = data['price'],
+                    description = data['description'], 
+                    create_time = time,
+                    country = Country.objects.get(id = data['country_id']),
+                    region = Regions.objects.get(id = data['region_id'])
+                )
+
+            if data.get('district_id') :
+                item.district = data['district_id']
+            
+            if is_active :
+                item.active_time = time
+            elif data.get('active_time') :
+                item.active_time = data['active_time']
+
+            item.save()
+            
+            for i in req.FILES.getlist('photos') :
+                photo = PhotoItem.objects.create(
+                    image = i
+                )
+
+                photo.save()
+
+                item.photos.add(photo)
+
+            return Response({'code' : 1})
         else :
-                return Response({'code' : 0})
+            print(item_form.errors)
+            return Response({'code' : -1})
+            
         
 class CategoryView(APIView) :
     permission_classes = [AllowAny]
