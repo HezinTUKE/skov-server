@@ -48,33 +48,41 @@ class ItemView(APIView) :
         form = GetItemForm(req.GET)
 
         if form.is_valid() :
-            item = Item.objects.get(id = data['id'])
-            my_item = item.user.id == req.user.id
+            try : 
+                item = Item.objects.get(id = data['id'])
+            except Exception as e:
+                item = None
 
-            is_liked_post = Like.objects.filter(user = req.user.id).exists()
+            if item :
 
-            val = {
-                'id' : data['id'],
-                'title' : item.title,
-                'price' : "{:.2f}".format(item.price),
-                'description' : item.description,
-                'category' : CategoryLang.objects.get(id = item.category_id).name_en,
-                'subcategory' : SubCategory.objects.get(id = item.subcategory_id).name_en,
-                'country' : Country.objects.get(id = item.country_id).country,
-                'region' : Regions.objects.get(id = item.region_id).region,
-                'photos' : [ i[1] for i in item.photos.values_list() ],
-                'is_owner' : my_item,
-                'is_liked' : is_liked_post
-            }
+                my_item = item.user.id == req.user.id
 
-            if my_item :
-                val['is_active'] = item.is_active
-                if not item.is_active:
-                    val['active_time'] = item.active_time 
+                is_liked_post = Like.objects.filter(user = req.user.id).exists()
 
-            return Response({
-                'item' : val
-            })
+                val = {
+                    'id' : data['id'],
+                    'title' : item.title,
+                    'price' : "{:.2f}".format(item.price),
+                    'description' : item.description,
+                    'category' : CategoryLang.objects.get(id = item.category_id).name_en,
+                    'subcategory' : SubCategory.objects.get(id = item.subcategory_id).name_en,
+                    'country' : Country.objects.get(id = item.country_id).country,
+                    'region' : Regions.objects.get(id = item.region_id).region,
+                    'photos' : [ i[1] for i in item.photos.values_list() ],
+                    'is_owner' : my_item,
+                    'is_liked' : is_liked_post
+                }
+
+                if my_item :
+                    val['is_active'] = item.is_active
+                    if not item.is_active:
+                        val['active_time'] = item.active_time 
+
+                return Response({
+                    'item' : val
+                })
+            else : 
+                return Response({'item' : None})
 
         else :
             return Response({'item' : None})
@@ -123,7 +131,18 @@ class ItemView(APIView) :
         else :
             print(item_form.errors)
             return Response({'code' : -1})
+        
+    def delete(self, req : HttpRequest, id):
+        # id_item = req.method
+        print(id)
+        # item = Item.objects.get(id = id_item)
             
+        # if item and item.user == req.user.id:
+        #     item.delete()
+
+        return Response({
+            'code' : 0
+        })
         
 class CategoryView(APIView) :
     permission_classes = [AllowAny]
