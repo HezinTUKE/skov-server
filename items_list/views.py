@@ -46,6 +46,7 @@ class ItemView(APIView) :
     def get(self, req : HttpRequest):
         data = req.GET.dict()
         form = GetItemForm(req.GET)
+        item = None
 
         if form.is_valid() :
             try : 
@@ -78,14 +79,9 @@ class ItemView(APIView) :
                     if not item.is_active:
                         val['active_time'] = item.active_time 
 
-                return Response({
-                    'item' : val
-                })
-            else : 
-                return Response({'item' : None})
-
-        else :
-            return Response({'item' : None})
+                item = val
+                
+        return Response({'item' : item})
 
     def post(self, req : HttpRequest) :
         item_form = CreateitemForm(req.POST, req.FILES)
